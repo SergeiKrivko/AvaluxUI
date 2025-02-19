@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaluxUI.Utils", "AvaluxUI.Utils\AvaluxUI.Utils.csproj", "{DA93DD52-DDFD-413E-925D-9B4470DD2F5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaluxUI.Avalonia", "AvaluxUI.Avalonia\AvaluxUI.Avalonia.csproj", "{B6AFEA46-B10F-4BB7-B68D-89050D156FF4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{3DB992A7-4132-4593-9BBE-612AA311A5B7}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\avalonia.yml = .github\workflows\avalonia.yml
+		.github\workflows\utils.yml = .github\workflows\utils.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA93DD52-DDFD-413E-925D-9B4470DD2F5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA93DD52-DDFD-413E-925D-9B4470DD2F5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA93DD52-DDFD-413E-925D-9B4470DD2F5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA93DD52-DDFD-413E-925D-9B4470DD2F5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6AFEA46-B10F-4BB7-B68D-89050D156FF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6AFEA46-B10F-4BB7-B68D-89050D156FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6AFEA46-B10F-4BB7-B68D-89050D156FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6AFEA46-B10F-4BB7-B68D-89050D156FF4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,14 @@
+﻿<Button xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             Click="Button_OnClick"
+             x:Class="AvaluxUI.Controls.SpinnerButton">
+    <Panel>
+        <TextBlock Name="TextBlock"></TextBlock>
+        <Panel Name="SpinnerPanel" IsVisible="False">
+            <Arc Width="20" Height="20" StrokeThickness="2" Name="Spinner" Classes="Spinner"/>
+        </Panel>
+    </Panel>
+</Button>

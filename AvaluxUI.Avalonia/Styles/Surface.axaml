@@ -1,0 +1,12 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="Window">
+        <Setter Property="Background" Value="{DynamicResource SurfaceColor}"></Setter>
+    </Style>
+
+    <Style Selector="Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"></Setter>
+    </Style>
+
+</Styles>

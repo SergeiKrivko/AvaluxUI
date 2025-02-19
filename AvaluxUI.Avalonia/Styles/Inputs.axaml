@@ -1,0 +1,54 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="TextBox">
+        <!-- <Setter Property="Background" Value="Transparent" /> -->
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        <Style Selector="^:pointerover  /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource Transparent1Color}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+        <Style Selector="^:focus  /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource Transparent2Color}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+    </Style>
+
+    <Style Selector="NumericUpDown">
+        <!-- <Setter Property="Background" Value="Transparent" /> -->
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        <Style Selector="^:pointerover  /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource Transparent1Color}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+        <Style Selector="^:focus  /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource Transparent2Color}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+    </Style>
+
+    <Style Selector="ComboBox">
+        <!-- <Setter Property="Background" Value="Transparent" /> -->
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        <Style Selector="^:pointerover  /template/ Border#Background">
+            <Setter Property="Background" Value="{DynamicResource Transparent1Color}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+        <Style Selector="^:focus  /template/ Border#Background">
+            <Setter Property="Background" Value="{DynamicResource Transparent2Color}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        </Style>
+    </Style>
+</Styles>
