@@ -8,11 +8,11 @@
         <PackageId>AvaluxUI.Avalonia</PackageId>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageVersion>1.0.0</PackageVersion>
+        <PackageVersion>1.0.1</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.*"/>
+        <PackageReference Include="Avalonia" Version="11.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
