@@ -38,8 +38,8 @@
             <Color x:Key="DangerColor">#C2190C</Color>
             <Color x:Key="DangerHoverColor">#E31D0E</Color>
 
-            <Color x:Key="PrimaryColor">#2245A2</Color>
-            <Color x:Key="PrimaryHoverColor">#2D5CD9</Color>
+            <Color x:Key="PrimaryColor">#115992</Color>
+            <Color x:Key="PrimaryHoverColor">#0E4978</Color>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

@@ -19,6 +19,17 @@
         </Style>
     </Style>
 
+    <Style Selector="ToggleButton">
+        <Setter Property="CornerRadius" Value="5" />
+        <Setter Property="Background" Value="Transparent" />
+        <Style Selector="^:pointerover   /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource Transparent2Color}" />
+        </Style>
+        <Style Selector="^:pressed   /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource Transparent2Color}" />
+        </Style>
+    </Style>
+
     <Style Selector="ToggleButton:checked   /template/ ContentPresenter#PART_ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource PrimaryColor}" />
         <Setter Property="BorderThickness" Value="1" />

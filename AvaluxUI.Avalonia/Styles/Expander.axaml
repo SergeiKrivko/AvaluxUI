@@ -1,0 +1,63 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="Expander">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        <Style Selector="^ ToggleButton">
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+
+            <!-- PointerOver -->
+            <Style Selector="^:pointerover /template/ Border#ToggleButtonBackground">
+                <Setter Property="Background" Value="{DynamicResource Transparent2Color}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            </Style>
+            <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+            <Style Selector="^:pointerover /template/ Border#ExpandCollapseChevronBorder">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <!-- Pressed -->
+            <Style Selector="^:pressed /template/ Border#ToggleButtonBackground">
+                <Setter Property="Background" Value="{DynamicResource Transparent2Color}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            </Style>
+            <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+            <Style Selector="^:pressed /template/ Border#ExpandCollapseChevronBorder">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <!-- Pressed -->
+            <Style Selector="^:checked /template/ Border#ToggleButtonBackground">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            </Style>
+            <Style Selector="^:checked /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+            <Style Selector="^:checked /template/ Border#ExpandCollapseChevronBorder">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <!-- Disabled -->
+            <Style Selector="^:disabled /template/ Border#ToggleButtonBackground">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            </Style>
+            <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Foreground" Value="{DynamicResource ExpanderHeaderForegroundDisabled}" />
+            </Style>
+            <Style Selector="^:disabled /template/ Border#ExpandCollapseChevronBorder">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+            <Style Selector="^:disabled /template/ Path#ExpandCollapseChevron">
+                <Setter Property="Stroke" Value="{DynamicResource ExpanderChevronForegroundDisabled}" />
+            </Style>
+        </Style>
+    </Style>
+
+</Styles>
