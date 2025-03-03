@@ -5,7 +5,7 @@ namespace AvaluxUI.Utils;
 
 public class SettingsSection : ISettingsSection
 {
-    internal Dictionary<string, string?> Values { get; }
+    internal Dictionary<string, string?> Values { get; private set; }
     internal Dictionary<string, SettingsSection> Sections { get; }
     public string? Name { get; }
 
@@ -25,6 +25,7 @@ public class SettingsSection : ISettingsSection
             return section;
         section = new SettingsSection(key, [], []);
         section.Changed += Changed;
+        section.RereadEvent += RereadEvent;
         Sections.Add(key, section);
         Changed?.Invoke();
         return section;
@@ -35,6 +36,7 @@ public class SettingsSection : ISettingsSection
         if (!Sections.Remove(key, out var section))
             return false;
         section.Changed -= Changed;
+        section.RereadEvent -= RereadEvent;
         Changed?.Invoke();
         return true;
     }
@@ -61,6 +63,7 @@ public class SettingsSection : ISettingsSection
 
     private string? Get(string key)
     {
+        RereadEvent?.Invoke();
         return Values.GetValueOrDefault(key);
     }
 
@@ -126,5 +129,16 @@ public class SettingsSection : ISettingsSection
                     s))
             .ToDictionary();
         return new SettingsSection(name, values, sections);
+    }
+
+    protected event Action? RereadEvent;
+
+    protected void Update(SettingsSection section)
+    {
+        Values = section.Values;
+        foreach (var settingsSection in Sections.Values)
+        {
+            settingsSection.Update((SettingsSection)section.GetSection(settingsSection.Name ?? ""));
+        }
     }
 }

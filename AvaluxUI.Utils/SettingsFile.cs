@@ -11,6 +11,7 @@ public class SettingsFile : SettingsSection
         Dictionary<string, SettingsSection> sections) : base("Global", global, sections)
     {
         Changed += Store;
+        RereadEvent += OnReread;
         _path = path;
     }
 
@@ -67,6 +68,30 @@ public class SettingsFile : SettingsSection
         {
         }
         catch (FileNotFoundException)
+        {
+        }
+    }
+    
+    private DateTime _lastReadTime;
+
+    private void OnReread()
+    {
+        if (_deleted || !File.Exists(_path) || File.GetLastWriteTime(_path) <= _lastReadTime)
+            return;
+        _lastReadTime = File.GetLastWriteTime(_path);
+        var document = new XmlDocument();
+        try
+        {
+            var tmp = FromXml(document.SelectSingleNode("settings") ?? throw new XmlException());
+            Update(tmp);
+        }
+        catch (FileNotFoundException)
+        {
+        }
+        catch (DirectoryNotFoundException)
+        {
+        }
+        catch (XmlException)
         {
         }
     }
