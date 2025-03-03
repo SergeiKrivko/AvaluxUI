@@ -1,4 +1,6 @@
-﻿namespace AvaluxUI.Utils;
+﻿using System.Reflection;
+
+namespace AvaluxUI.Utils;
 
 public static class Injector
 {
@@ -16,19 +18,34 @@ public static class Injector
 
     private static object CreateInstance(Type serviceType)
     {
-        var constructor = serviceType.GetConstructors().First(c => c.IsPublic);
-        var parameters = constructor.GetParameters()
-            .Select(p => Inject(p.ParameterType))
-            .ToArray();
-        var instance = Activator.CreateInstance(serviceType, parameters) ?? throw new InvalidOperationException();
-        Instances[serviceType] = instance;
-        return instance;
+        foreach (var constructor in serviceType.GetConstructors().Where(c => c.IsPublic))
+        {
+            try
+            {
+                var parameters = constructor.GetParameters()
+                    .Select(p => Inject(p.ParameterType))
+                    .ToArray();
+                var instance = constructor.Invoke(parameters) ?? throw new InvalidOperationException();
+                Instances[serviceType] = instance;
+                return instance;
+            }
+            catch (TargetInvocationException)
+            {
+            }
+            catch (ArgumentException)
+            {
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
+        throw new Exception("Cannot create an instance of " + serviceType.FullName);
     }
 
     public static object Inject(Type serviceType)
     {
         if (!Instances.TryGetValue(serviceType, out var instance))
-            throw new InvalidOperationException("Unknown service type");
+            throw new InvalidOperationException($"Unknown service type {serviceType.FullName}");
         return instance ?? Instances.Values.FirstOrDefault(serviceType.IsInstanceOfType) ?? CreateInstance(serviceType);
     }
 
