@@ -39,14 +39,16 @@ public static class Injector
             {
             }
         }
+
         throw new Exception("Cannot create an instance of " + serviceType.FullName);
     }
 
     public static object Inject(Type serviceType)
     {
         if (!Instances.TryGetValue(serviceType, out var instance))
-            throw new InvalidOperationException($"Unknown service type {serviceType.FullName}");
-        return instance ?? Instances.Values.FirstOrDefault(serviceType.IsInstanceOfType) ?? CreateInstance(serviceType);
+            return Instances.Values.FirstOrDefault(serviceType.IsInstanceOfType) ??
+                   throw new InvalidOperationException($"Unknown service type {serviceType.FullName}");
+        return instance ?? CreateInstance(serviceType);
     }
 
     public static T Inject<T>()
