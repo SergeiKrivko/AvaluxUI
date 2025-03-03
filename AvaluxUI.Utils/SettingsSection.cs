@@ -141,4 +141,6 @@ public class SettingsSection : ISettingsSection
             settingsSection.Update((SettingsSection)section.GetSection(settingsSection.Name ?? ""));
         }
     }
+
+    public static SettingsSection Empty(string? name = null) => new SettingsSection(name);
 }
