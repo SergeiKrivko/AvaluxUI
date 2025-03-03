@@ -29,7 +29,7 @@ public static class Injector
     {
         if (!Instances.TryGetValue(serviceType, out var instance))
             throw new InvalidOperationException("Unknown service type");
-        return instance ?? CreateInstance(serviceType);
+        return instance ?? Instances.Values.FirstOrDefault(serviceType.IsInstanceOfType) ?? CreateInstance(serviceType);
     }
 
     public static T Inject<T>()
