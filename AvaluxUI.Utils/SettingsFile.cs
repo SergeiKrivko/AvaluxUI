@@ -6,6 +6,7 @@ public class SettingsFile : SettingsSection
 {
     private readonly string _path;
     private bool _deleted;
+    private DateTime _lastReadTime = DateTime.Now;
 
     private SettingsFile(string path, Dictionary<string, string?> global,
         Dictionary<string, SettingsSection> sections) : base("Global", global, sections)
@@ -20,6 +21,7 @@ public class SettingsFile : SettingsSection
         var document = new XmlDocument();
         try
         {
+            document.Load(path);
             var tmp = FromXml(document.SelectSingleNode("settings") ?? throw new XmlException());
             return new SettingsFile(path, tmp.Values, tmp.Sections);
         }
@@ -71,14 +73,12 @@ public class SettingsFile : SettingsSection
         {
         }
     }
-    
-    private DateTime _lastReadTime;
 
     private void OnReread()
     {
         if (_deleted || !File.Exists(_path) || File.GetLastWriteTime(_path) <= _lastReadTime)
             return;
-        _lastReadTime = File.GetLastWriteTime(_path);
+        _lastReadTime = DateTime.Now;
         var document = new XmlDocument();
         try
         {
