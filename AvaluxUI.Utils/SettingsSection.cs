@@ -31,6 +31,7 @@ public class SettingsSection : ISettingsSection
                 throw new Exception("Section is encrypted");
             return section;
         }
+
         section = new SettingsSection(key, [], []);
         section.Changed += Changed;
         section.RereadEvent += RereadEvent;
@@ -48,8 +49,17 @@ public class SettingsSection : ISettingsSection
                 throw new Exception("Secret key hash does not match secretKey hash");
             if (section is EncryptedSettingsSection encryptedSection)
                 return encryptedSection;
-            var newEncryptedSection = new EncryptedSettingsSection(secretKey, Name, Values, Sections);
+
+            section.RereadEvent -= RereadEvent;
+            section.Changed -= Changed;
+
+            var newEncryptedSection =
+                new EncryptedSettingsSection(secretKey, section.Name, section.Values, section.Sections);
             Sections[key] = newEncryptedSection;
+
+            newEncryptedSection.Changed += Changed;
+            newEncryptedSection.RereadEvent += RereadEvent;
+
             return newEncryptedSection;
         }
 
