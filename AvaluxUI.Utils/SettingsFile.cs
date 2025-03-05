@@ -49,7 +49,7 @@ public class SettingsFile : SettingsSection
         var root = document.CreateElement("settings");
         document.AppendChild(root);
 
-        foreach (var tag in ToXml(document).ChildNodes.Cast<XmlNode>())
+        foreach (var tag in ToXmlElements(document))
         {
             root.AppendChild(tag);
         }

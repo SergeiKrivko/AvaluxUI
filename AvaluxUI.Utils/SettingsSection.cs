@@ -88,11 +88,8 @@ public class SettingsSection : ISettingsSection
         }
     }
 
-    internal XmlElement ToXml(XmlDocument document)
+    protected IEnumerable<XmlElement> ToXmlElements(XmlDocument document)
     {
-        var root = document.CreateElement("section");
-        root.SetAttribute("name", Name);
-
         var global = document.CreateElement("global");
         foreach (var item in Values)
         {
@@ -104,11 +101,21 @@ public class SettingsSection : ISettingsSection
             }
         }
 
-        root.AppendChild(global);
+        yield return global;
 
         foreach (var section in Sections.Values)
         {
-            root.AppendChild(section.ToXml(document));
+            yield return section.ToXml(document);
+        }
+    }
+
+    private XmlElement ToXml(XmlDocument document)
+    {
+        var root = document.CreateElement("section");
+        root.SetAttribute("name", Name);
+        foreach (var tag in ToXmlElements(document))
+        {
+            root.AppendChild(tag);
         }
 
         return root;
