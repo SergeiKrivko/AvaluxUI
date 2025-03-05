@@ -7,6 +7,7 @@ public interface ISettingsSection
     public event Action? Changed;
 
     public ISettingsSection GetSection(string key);
+    public ISettingsSection GetSection(string key, string secretKey);
     public bool RemoveSection(string key);
 
     public void Set(string? key, object? obj);

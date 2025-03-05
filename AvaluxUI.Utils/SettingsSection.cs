@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using System.Xml;
 
 namespace AvaluxUI.Utils;
@@ -8,22 +10,50 @@ public class SettingsSection : ISettingsSection
     internal Dictionary<string, string?> Values { get; private set; }
     internal Dictionary<string, SettingsSection> Sections { get; }
     public string? Name { get; }
+    private byte[]? SecretKeyHash { get; }
 
     public event Action? Changed;
 
     internal SettingsSection(string? name = null, Dictionary<string, string?>? dictionary = null,
-        Dictionary<string, SettingsSection>? sections = null)
+        Dictionary<string, SettingsSection>? sections = null, byte[]? secretKeyHash = null)
     {
         Name = name;
         Values = dictionary ?? [];
         Sections = sections ?? [];
+        SecretKeyHash = secretKeyHash;
     }
 
     public ISettingsSection GetSection(string key)
     {
         if (Sections.TryGetValue(key, out var section))
+        {
+            if (section.SecretKeyHash != null)
+                throw new Exception("Section is encrypted");
             return section;
+        }
         section = new SettingsSection(key, [], []);
+        section.Changed += Changed;
+        section.RereadEvent += RereadEvent;
+        Sections.Add(key, section);
+        Changed?.Invoke();
+        return section;
+    }
+
+    public ISettingsSection GetSection(string key, string secretKey)
+    {
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(secretKey));
+        if (Sections.TryGetValue(key, out var section))
+        {
+            if (section.SecretKeyHash?.SequenceEqual(hash) == false)
+                throw new Exception("Secret key hash does not match secretKey hash");
+            if (section is EncryptedSettingsSection encryptedSection)
+                return encryptedSection;
+            var newEncryptedSection = new EncryptedSettingsSection(secretKey, Name, Values, Sections);
+            Sections[key] = newEncryptedSection;
+            return newEncryptedSection;
+        }
+
+        section = new EncryptedSettingsSection(secretKey, key, [], []);
         section.Changed += Changed;
         section.RereadEvent += RereadEvent;
         Sections.Add(key, section);
@@ -45,7 +75,7 @@ public class SettingsSection : ISettingsSection
     {
         if (key == null)
             return;
-        Values[key] = value;
+        Values[key] = Encrypt(value);
         Changed?.Invoke();
     }
 
@@ -64,7 +94,7 @@ public class SettingsSection : ISettingsSection
     private string? Get(string key)
     {
         RereadEvent?.Invoke();
-        return Values.GetValueOrDefault(key);
+        return Decrypt(Values.GetValueOrDefault(key));
     }
 
     public T Get<T>(string key, T defaultValue)
@@ -113,6 +143,8 @@ public class SettingsSection : ISettingsSection
     {
         var root = document.CreateElement("section");
         root.SetAttribute("name", Name);
+        if (SecretKeyHash != null)
+            root.SetAttribute("encrypt", Convert.ToBase64String(SecretKeyHash));
         foreach (var tag in ToXmlElements(document))
         {
             root.AppendChild(tag);
@@ -124,10 +156,14 @@ public class SettingsSection : ISettingsSection
     internal static SettingsSection FromXml(XmlNode root)
     {
         var name = root.Attributes?["name"]?.Value;
+        var hashString = root.Attributes?["encrypt"]?.Value;
+        var hash = hashString == null ? null : Convert.FromBase64String(hashString);
+
         var values = root.SelectSingleNode("global")?.ChildNodes
             .Cast<XmlNode>()
             .Select(n => new KeyValuePair<string, string?>(n.Name, n.InnerText))
             .ToDictionary();
+
         var sections = root.SelectNodes("section")?
             .Cast<XmlNode>()
             .Select(FromXml)
@@ -135,7 +171,8 @@ public class SettingsSection : ISettingsSection
                 new KeyValuePair<string, SettingsSection>(s.Name ?? throw new Exception("Section name can not be null"),
                     s))
             .ToDictionary();
-        return new SettingsSection(name, values, sections);
+
+        return new SettingsSection(name, values, sections, hash);
     }
 
     protected event Action? RereadEvent;
@@ -150,4 +187,7 @@ public class SettingsSection : ISettingsSection
     }
 
     public static SettingsSection Empty(string? name = null) => new SettingsSection(name);
+
+    protected virtual string? Encrypt(string? value) => value;
+    protected virtual string? Decrypt(string? value) => value;
 }

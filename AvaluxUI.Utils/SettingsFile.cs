@@ -54,7 +54,8 @@ public class SettingsFile : SettingsSection
             root.AppendChild(tag);
         }
 
-        Directory.CreateDirectory(Path.GetDirectoryName(_path) ?? ".");
+        if (!string.IsNullOrEmpty(Path.GetDirectoryName(_path)))
+            Directory.CreateDirectory(Path.GetDirectoryName(_path) ?? ".");
         document.Save(_path);
     }
 
