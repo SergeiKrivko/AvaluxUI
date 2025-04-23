@@ -23,7 +23,7 @@ public class SettingsSection : ISettingsSection
         SecretKeyHash = secretKeyHash;
     }
 
-    public ISettingsSection GetSection(string key)
+    private SettingsSection GetPublicSection(string key)
     {
         if (Sections.TryGetValue(key, out var section))
         {
@@ -40,7 +40,7 @@ public class SettingsSection : ISettingsSection
         return section;
     }
 
-    public ISettingsSection GetSection(string key, string secretKey)
+    public SettingsSection GetProtectedSection(string key, string secretKey)
     {
         var hash = SHA256.HashData(Encoding.UTF8.GetBytes(secretKey));
         if (Sections.TryGetValue(key, out var section))
@@ -71,34 +71,49 @@ public class SettingsSection : ISettingsSection
         return section;
     }
 
-    public bool RemoveSection(string key)
+    public Task<ISettingsSection> GetSection(string key, string? secretKey = null)
+    {
+        if (secretKey != null)
+            return Task.FromResult<ISettingsSection>(GetProtectedSection(key, secretKey));
+        return Task.FromResult<ISettingsSection>(GetPublicSection(key));
+    }
+
+    public ISettingsSection GetSectionSync(string key, string? secretKey = null)
+    {
+        if (secretKey != null)
+            return GetProtectedSection(key, secretKey);
+        return GetPublicSection(key);
+    }
+
+    public Task<bool> RemoveSection(string key)
     {
         if (!Sections.Remove(key, out var section))
-            return false;
+            return Task.FromResult(false);
         section.Changed -= Changed;
         section.RereadEvent -= RereadEvent;
         Changed?.Invoke();
-        return true;
+        return Task.FromResult(true);
     }
 
-    private void Set(string? key, string? value)
+    private Task Set(string? key, string? value)
     {
         if (key == null)
-            return;
+            return Task.CompletedTask;
         Values[key] = Encrypt(value);
         Changed?.Invoke();
+        return Task.CompletedTask;
     }
 
-    public void Set(string? key, object? obj)
+    public Task Set(string? key, object? obj)
     {
-        Set(key, JsonSerializer.Serialize(obj));
+        return Set(key, JsonSerializer.Serialize(obj));
     }
 
-    public bool Remove(string key)
+    public Task<bool> Remove(string key)
     {
         var res = Values.Remove(key);
         Changed?.Invoke();
-        return res;
+        return Task.FromResult(res);
     }
 
     private string? Get(string key)
@@ -107,24 +122,24 @@ public class SettingsSection : ISettingsSection
         return Decrypt(Values.GetValueOrDefault(key));
     }
 
-    public T Get<T>(string key, T defaultValue)
+    public async Task<T> Get<T>(string key, T defaultValue)
     {
-        var res = Get<T>(key);
+        var res = await Get<T>(key);
         return res ?? defaultValue;
     }
 
-    public T? Get<T>(string key)
+    public Task<T?> Get<T>(string key)
     {
         var str = Get(key);
         if (str == null)
-            return default;
+            return Task.FromResult<T?>(default);
         try
         {
-            return JsonSerializer.Deserialize<T>(str);
+            return Task.FromResult(JsonSerializer.Deserialize<T>(str));
         }
         catch (JsonException)
         {
-            return default;
+            return Task.FromResult<T?>(default);
         }
     }
 
@@ -192,7 +207,7 @@ public class SettingsSection : ISettingsSection
         Values = section.Values;
         foreach (var settingsSection in Sections.Values)
         {
-            settingsSection.Update((SettingsSection)section.GetSection(settingsSection.Name ?? ""));
+            settingsSection.Update((SettingsSection)section.GetSectionSync(settingsSection.Name ?? ""));
         }
     }
 
