@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaluxUI.Utils.Tests", "AvaluxUI.Utils.Tests\AvaluxUI.Utils.Tests.csproj", "{5C1A90D6-B9BE-44FB-BDE1-72EAD23ECB02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaluxUI.Utils.Sqlite", "AvaluxUI.Utils.Sqlite\AvaluxUI.Utils.Sqlite.csproj", "{7914C92C-DD8E-41B3-93D6-24C9F235E5BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{5C1A90D6-B9BE-44FB-BDE1-72EAD23ECB02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C1A90D6-B9BE-44FB-BDE1-72EAD23ECB02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C1A90D6-B9BE-44FB-BDE1-72EAD23ECB02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7914C92C-DD8E-41B3-93D6-24C9F235E5BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7914C92C-DD8E-41B3-93D6-24C9F235E5BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7914C92C-DD8E-41B3-93D6-24C9F235E5BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7914C92C-DD8E-41B3-93D6-24C9F235E5BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
