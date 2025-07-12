@@ -1,4 +1,5 @@
-﻿using AvaluxUI.Utils;
+﻿using System.Threading.Tasks;
+using AvaluxUI.Utils;
 using NUnit.Framework;
 
 namespace AvaluxUI.Utils.Tests;
@@ -8,25 +9,25 @@ namespace AvaluxUI.Utils.Tests;
 public class SettingsSectionTest
 {
     [Test]
-    public void TestEncrypt()
+    public async Task TestEncrypt()
     {
         var file = SettingsFile.Open("test.xml");
-        var section = file.GetSection("Test", "12345678");
-        section.Set("key", "value");
+        var section = await file.GetSection("Test", "12345678");
+        await section.Set("key", "value");
 
-        Assert.That(section.Get<string>("key") == "value");
+        Assert.That(await section.Get<string>("key") == "value");
     }
 
     private record TestStruct(string Key, string Value, int Number);
 
     [Test]
-    public void TestEncryptStruct()
+    public async Task TestEncryptStruct()
     {
         var file = SettingsFile.Open("test.xml");
-        var section = file.GetSection("Test", "12345678");
-        section.Set("key", new TestStruct("KEY", "VALUE", 123));
+        var section = await file.GetSection("Test", "12345678");
+        await section.Set("key", new TestStruct("KEY", "VALUE", 123));
 
-        var result = section.Get<TestStruct>("key");
+        var result = await section.Get<TestStruct>("key");
         Assert.That(result.Key == "KEY");
         Assert.That(result.Value == "VALUE");
         Assert.That(result.Number == 123);
