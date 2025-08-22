@@ -46,8 +46,12 @@ public static class Injector
     public static object Inject(Type serviceType)
     {
         if (!Instances.TryGetValue(serviceType, out var instance))
-            return Instances.Values.FirstOrDefault(serviceType.IsInstanceOfType) ??
-                   throw new InvalidOperationException($"Unknown service type {serviceType.FullName}");
+        {
+            var type = Instances.Keys.FirstOrDefault(serviceType.IsAssignableTo) ??
+                       throw new InvalidOperationException($"Unknown service type {serviceType.FullName}");
+            return Instances[type] ?? CreateInstance(type);
+        }
+
         return instance ?? CreateInstance(serviceType);
     }
 
