@@ -7,11 +7,12 @@ internal class EncryptedSettingsSection : SettingsSection
 {
     private readonly Aes _aes = Aes.Create();
 
-    public EncryptedSettingsSection(string secretKey, string? name = null,
+    public EncryptedSettingsSection(SettingsSection? parent, string? secretKey, string? name = null,
         Dictionary<string, string?>? dictionary = null,
-        Dictionary<string, SettingsSection>? sections = null) : base(name, dictionary, sections,
-        SHA256.HashData(Encoding.UTF8.GetBytes(secretKey)))
+        Dictionary<string, SettingsSection>? sections = null) : base(parent, name, dictionary, sections,
+        BCrypt.Net.BCrypt.HashPassword(secretKey))
     {
+        ArgumentNullException.ThrowIfNull(secretKey, nameof(secretKey));
         // Генерация ключа и IV (Initialization Vector) на основе пароля
         _aes.Key = GenerateKey(secretKey, _aes.KeySize / 8);
         _aes.IV = GenerateIv(secretKey, _aes.BlockSize / 8);

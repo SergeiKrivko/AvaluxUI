@@ -4,7 +4,6 @@ public interface ISettingsSection
 {
     public string? Name { get; }
 
-    public event Action? Changed;
     public Task<ISettingsSection> GetSection(string key, string? secretKey = null);
     public Task<bool> RemoveSection(string key);
 

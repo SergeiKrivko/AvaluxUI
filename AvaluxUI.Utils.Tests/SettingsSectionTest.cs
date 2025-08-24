@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Threading.Tasks;
 using AvaluxUI.Utils;
 using NUnit.Framework;
 
@@ -8,10 +9,58 @@ namespace AvaluxUI.Utils.Tests;
 [TestOf(typeof(SettingsSection))]
 public class SettingsSectionTest
 {
+    private static SettingsFile OpenFile(bool clearIfExists = true)
+    {
+        if (clearIfExists && File.Exists("test.xml"))
+            File.Delete("test.xml");
+        return SettingsFile.Open("test.xml");
+    }
+
+    [Test]
+    public async Task TestSimple()
+    {
+        var file = OpenFile();
+        await file.Set("key", "value");
+
+        Assert.That(await file.Get<string>("key") == "value");
+    }
+
+    [Test]
+    public async Task TestSection()
+    {
+        var file = OpenFile();
+        var section = await file.GetSection("Test");
+        await section.Set("key", "value");
+
+        Assert.That(await section.Get<string>("key") == "value");
+    }
+
+    [Test]
+    public async Task TestReopen()
+    {
+        var file = OpenFile();
+        await file.Set("key", "value");
+
+        file = OpenFile(false);
+        Assert.That(await file.Get<string>("key") == "value");
+    }
+
+    [Test]
+    public async Task TestReopenWithSection()
+    {
+        var file = OpenFile();
+        var section = await file.GetSection("Test");
+        await section.Set("key", "value");
+
+        file = OpenFile(false);
+        section = await file.GetSection("Test");
+        Assert.That(await section.Get<string>("key") == "value");
+    }
+
     [Test]
     public async Task TestEncrypt()
     {
-        var file = SettingsFile.Open("test.xml");
+        var file = OpenFile();
         var section = await file.GetSection("Test", "12345678");
         await section.Set("key", "value");
 
@@ -21,9 +70,22 @@ public class SettingsSectionTest
     private record TestStruct(string Key, string Value, int Number);
 
     [Test]
+    public async Task TestSimpleStruct()
+    {
+        var file = OpenFile();
+        var section = await file.GetSection("Test");
+        await section.Set("key", new TestStruct("KEY", "VALUE", 123));
+
+        var result = await section.Get<TestStruct>("key");
+        Assert.That(result.Key == "KEY");
+        Assert.That(result.Value == "VALUE");
+        Assert.That(result.Number == 123);
+    }
+
+    [Test]
     public async Task TestEncryptStruct()
     {
-        var file = SettingsFile.Open("test.xml");
+        var file = OpenFile();
         var section = await file.GetSection("Test", "12345678");
         await section.Set("key", new TestStruct("KEY", "VALUE", 123));
 
