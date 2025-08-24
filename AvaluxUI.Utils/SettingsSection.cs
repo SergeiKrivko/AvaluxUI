@@ -39,10 +39,9 @@ public class SettingsSection : ISettingsSection
 
     public SettingsSection GetProtectedSection(string key, string secretKey)
     {
-        var hash = BCrypt.Net.BCrypt.HashPassword(secretKey);
         if (Sections.TryGetValue(key, out var section))
         {
-            if (section.SecretKeyHash != hash)
+            if (!BCrypt.Net.BCrypt.Verify(secretKey, section.SecretKeyHash))
                 throw new Exception("Secret key hash does not match secretKey hash");
             if (section is EncryptedSettingsSection encryptedSection)
                 return encryptedSection;

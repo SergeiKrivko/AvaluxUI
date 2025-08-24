@@ -94,4 +94,16 @@ public class SettingsSectionTest
         Assert.That(result.Value == "VALUE");
         Assert.That(result.Number == 123);
     }
+
+    [Test]
+    public async Task TestReopenEncrypt()
+    {
+        var file = OpenFile();
+        var section = await file.GetSection("Test", "12345678");
+        await section.Set("key", "value");
+
+        file = OpenFile(false);
+        section = await file.GetSection("Test", "12345678");
+        Assert.That(await section.Get<string>("key") == "value");
+    }
 }
