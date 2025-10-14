@@ -11,7 +11,7 @@ public class SettingsSection : ISettingsSection
     internal Dictionary<string, SettingsSection> Sections { get; private set; }
     public string? Name { get; }
     private string? SecretKeyHash { get; }
-    protected SettingsSection? Parent { get; }
+    private SettingsSection? Parent { get; set; }
 
     internal SettingsSection(SettingsSection? parent, string? name = null, Dictionary<string, string?>? dictionary = null,
         Dictionary<string, SettingsSection>? sections = null, string? secretKeyHash = null)
@@ -20,6 +20,8 @@ public class SettingsSection : ISettingsSection
         Name = name;
         Values = dictionary ?? [];
         Sections = sections ?? [];
+        foreach (var section in Sections.Values)
+            section.Parent = this;
         SecretKeyHash = secretKeyHash;
     }
 

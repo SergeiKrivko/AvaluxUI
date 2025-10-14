@@ -106,4 +106,20 @@ public class SettingsSectionTest
         section = await file.GetSection("Test", "12345678");
         Assert.That(await section.Get<string>("key") == "value");
     }
+
+    [Test]
+    public async Task TestUpdateWithSection()
+    {
+        var file = OpenFile();
+        var section = await file.GetSection("Test");
+        await section.Set("key", "value1");
+
+        file = OpenFile(false);
+        section = await file.GetSection("Test");
+        await section.Set("key", "value2");
+
+        file = OpenFile(false);
+        section = await file.GetSection("Test");
+        Assert.That(await section.Get<string>("key") == "value2");
+    }
 }
