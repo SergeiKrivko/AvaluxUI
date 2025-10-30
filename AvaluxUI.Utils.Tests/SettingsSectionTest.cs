@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using AvaluxUI.Utils;
 using NUnit.Framework;
 
 namespace AvaluxUI.Utils.Tests;
@@ -119,6 +118,59 @@ public class SettingsSectionTest
         await section.Set("key", "value2");
 
         file = OpenFile(false);
+        section = await file.GetSection("Test");
+        Assert.That(await section.Get<string>("key") == "value2");
+    }
+
+    [Test]
+    public async Task TestCopyInMemory()
+    {
+        var file = OpenFile();
+        await file.Set("key", "value");
+
+        var memoryCopy = file.Clone();
+
+        Assert.That(await memoryCopy.Get<string>("key") == "value");
+    }
+
+    [Test]
+    public async Task TestCopyBack()
+    {
+        var file = OpenFile();
+        await file.Set("key", "value1");
+
+        var memoryCopy = file.Clone();
+        await memoryCopy.Set("key", "value2");
+        await file.Update(memoryCopy);
+
+        Assert.That(await memoryCopy.Get<string>("key") == "value2");
+    }
+
+    [Test]
+    public async Task TestCopyInMemoryWithSection()
+    {
+        var file = OpenFile();
+        var section = await file.GetSection("Test");
+        await section.Set("key", "value");
+
+        var memoryCopy = file.Clone();
+        section = await memoryCopy.GetSection("Test");
+
+        Assert.That(await section.Get<string>("key") == "value");
+    }
+
+    [Test]
+    public async Task TestCopyBackWithSection()
+    {
+        var file = OpenFile();
+        var section = await file.GetSection("Test");
+        await section.Set("key", "value1");
+
+        var memoryCopy = file.Clone();
+        section = await memoryCopy.GetSection("Test");
+        await section.Set("key", "value2");
+        await file.Update(memoryCopy);
+
         section = await file.GetSection("Test");
         Assert.That(await section.Get<string>("key") == "value2");
     }

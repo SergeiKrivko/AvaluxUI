@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Xml;
 
 namespace AvaluxUI.Utils;
@@ -13,7 +11,8 @@ public class SettingsSection : ISettingsSection
     private string? SecretKeyHash { get; }
     private SettingsSection? Parent { get; set; }
 
-    internal SettingsSection(SettingsSection? parent, string? name = null, Dictionary<string, string?>? dictionary = null,
+    internal SettingsSection(SettingsSection? parent, string? name = null,
+        Dictionary<string, string?>? dictionary = null,
         Dictionary<string, SettingsSection>? sections = null, string? secretKeyHash = null)
     {
         Parent = parent;
@@ -184,12 +183,12 @@ public class SettingsSection : ISettingsSection
         return result;
     }
 
-    protected async Task Update(SettingsSection section)
+    public async Task Update(SettingsSection section)
     {
         Values = section.Values;
         foreach (var settingsSection in Sections.Values)
         {
-            await settingsSection.Update((SettingsSection)(await section.GetSection(settingsSection.Name ?? "")));
+            await settingsSection.Update((SettingsSection)await section.GetSection(settingsSection.Name ?? ""));
         }
     }
 
@@ -208,5 +207,18 @@ public class SettingsSection : ISettingsSection
     {
         if (Parent != null)
             await Parent.Reread();
+    }
+
+    public SettingsSection Clone()
+    {
+        var result = new SettingsSection(null, Name, Values,
+            Sections.ToDictionary(s => s.Key, s => s.Value.Clone()),
+            SecretKeyHash);
+        foreach (var section in result.Sections.Values)
+        {
+            section.Parent = result;
+        }
+
+        return result;
     }
 }
